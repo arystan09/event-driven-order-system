@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     redis_host: str = "localhost"
     redis_port: int = 6379
     redis_db: int = 0
+    redis_order_queue: str = "order_ids"
 
     model_config = SettingsConfigDict(
         env_file=".env",

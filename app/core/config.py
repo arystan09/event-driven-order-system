@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     redis_db: int = 0
     redis_order_queue: str = "order_ids"
     redis_order_dlq: str = "order_ids_dlq"
+    rate_limit_max_requests: int = 30
+    rate_limit_window_seconds: int = 60
 
     model_config = SettingsConfigDict(
         env_file=".env",

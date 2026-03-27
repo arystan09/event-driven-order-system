@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_session
 from app.services.orders import create_order
+from app.services.rate_limit import enforce_user_rate_limit
 
 router = APIRouter()
 
@@ -24,6 +25,7 @@ async def create_order_endpoint(
     payload: OrderCreateRequest,
     session: AsyncSession = Depends(get_session),
 ) -> OrderCreateResponse:
+    await enforce_user_rate_limit(payload.user_id)
     order = await create_order(
         session=session,
         user_id=payload.user_id,

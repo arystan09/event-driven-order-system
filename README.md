@@ -22,3 +22,23 @@ uvicorn app.main:app --reload
 ```bash
 python -m worker.main
 ```
+
+## Migrations (Alembic)
+
+Run migrations locally (requires Postgres running and `psycopg2-binary` installed):
+
+```bash
+alembic -c alembic.ini upgrade head
+```
+
+## Run with Docker
+
+```bash
+docker compose up --build
+```
+
+Then apply migrations from another shell:
+
+```bash
+docker compose exec api alembic -c alembic.ini upgrade head
+```

@@ -39,3 +39,16 @@ async def close_redis() -> None:
 async def enqueue_order_id(order_id: int) -> None:
     redis = await get_redis()
     await redis.rpush(settings.redis_order_queue, str(order_id))
+
+
+async def dequeue_order_id(*, timeout_seconds: int = 5) -> int | None:
+    redis = await get_redis()
+    item = await redis.blpop(settings.redis_order_queue, timeout=timeout_seconds)
+    if item is None:
+        return None
+
+    _, value = item
+    try:
+        return int(value)
+    except ValueError:
+        return None

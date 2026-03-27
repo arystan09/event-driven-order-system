@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     redis_port: int = 6379
     redis_db: int = 0
     redis_order_queue: str = "order_ids"
+    redis_order_dlq: str = "order_ids_dlq"
 
     model_config = SettingsConfigDict(
         env_file=".env",

@@ -41,6 +41,25 @@ async def enqueue_order_id(order_id: int) -> None:
     await redis.rpush(settings.redis_order_queue, str(order_id))
 
 
+def _attempt_key(order_id: int) -> str:
+    return f"order_attempts:{order_id}"
+
+
+async def increment_attempt(order_id: int) -> int:
+    redis = await get_redis()
+    return int(await redis.incr(_attempt_key(order_id)))
+
+
+async def clear_attempt(order_id: int) -> None:
+    redis = await get_redis()
+    await redis.delete(_attempt_key(order_id))
+
+
+async def enqueue_dead_letter(order_id: int) -> None:
+    redis = await get_redis()
+    await redis.rpush(settings.redis_order_dlq, str(order_id))
+
+
 async def dequeue_order_id(*, timeout_seconds: int = 5) -> int | None:
     redis = await get_redis()
     item = await redis.blpop(settings.redis_order_queue, timeout=timeout_seconds)
